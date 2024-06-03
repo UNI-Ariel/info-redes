@@ -7,9 +7,9 @@ sudo nano /etc/dhcp/dhcpd.conf
 
 Modificar:
 option domain-name "redes.inf";
-option domain-name-servers 10.0.2.2;
+option domain-name-servers dns.redes.inf;
 
-Agregar:
+Agregar para DHCP Dinámico:
 subnet 10.0.2.0 netmask 255.255.255.0 {
   range 10.0.2.10 10.0.2.50;
   option routers 10.0.2.1;
@@ -17,6 +17,13 @@ subnet 10.0.2.0 netmask 255.255.255.0 {
   option domain-name "redes.inf";
   option domain-name-servers 10.0.2.2;
 }
+
+Agregar para DHCP Estático para servidor:
+host webserver {
+  hardware ethernet 08:00:27:D2:28:E6;
+  fixed-address 10.0.2.3;
+}
+
 
 Configurar la interfaz
 Editar el archivo /etc/default/isc-dhcp-server
