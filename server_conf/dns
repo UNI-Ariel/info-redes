@@ -1,0 +1,75 @@
+Instalar BIND9:
+sudo apt install bind9 bind9utils bind9-doc
+
+Configurar archivo /etc/bind/named.conf.options
+con nano:
+sudo nano /etc/bind/named.conf.options
+
+Agregar:
+forwarders {
+  8.8.8.8;
+};
+
+
+Configurar archivo /etc/bind/named.conf.local
+con nano:
+sudo nano /etc/bind/named.conf.local
+
+Agregar:
+zone "redes.inf" {
+  type master;
+  file "/etc/bind/db.redes.inf";
+};
+
+zone "2.0.10.in-addr.arpa" {
+  type master;
+  file "/etc/bind/db.10.0.2";
+};
+
+Crear los archivos necesarios "/etc/bind/db.redes.inf" "2.0.10.in-addr.arpa"
+con nano:
+sudo nano /etc/bind/db.redes.inf
+Agregar:
+$TTL    4800
+@       IN      SOA     dns.redes.inf. admin.redes.inf. (
+                    2024053101        ; Serial
+                         4800         ; Refresh
+                         6400         ; Retry
+                         9200         ; Expire
+                         4800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.redes.inf.
+dns     IN      A       10.0.2.2
+dhcp    IN      A       10.0.2.2
+www     IN      A       10.0.2.3
+@       IN      A       10.0.2.3
+
+sudo nano /etc/bind/db.10.0.2
+Agregar:
+$TTL    4800
+@       IN      SOA     dns.redes.inf. admin.redes.inf. (
+                    2024053101        ; Serial
+                         4800         ; Refresh
+                         6400         ; Retry
+                         9200         ; Expire
+                         4800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns.redes.inf.
+2       IN      PTR     dns.redes.inf.
+2       IN      PTR     dhcp.redes.inf.
+3       IN      PTR     www.redes.inf.
+3       IN      PTR     redes.inf.
+
+
+Verificar configuraciones
+sudo named-checkconf
+sudo named-checkzone example.com /etc/bind/db.redes.inf
+sudo named-checkzone 2.0.10.in-addr.arpa /etc/bind/bd.10.0.2
+
+
+Permitir en firewall si esta activo
+sudo ufw allow bind9
+
+
+Reiniciar BIND
+sudo systemctl restart bind9
