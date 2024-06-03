@@ -20,7 +20,7 @@ subnet 10.0.2.0 netmask 255.255.255.0 {
 
 Agregar para DHCP Estático para servidor:
 host webserver {
-  hardware ethernet 08:00:27:D2:28:E6;
+  hardware ethernet 08:00:27:D2:28:E6;      #Cambiar a la MAC de la tarjeta de red del servidor web U omitir
   fixed-address 10.0.2.3;
 }
 
