@@ -5,6 +5,9 @@ Configurar archivo /etc/bind/named.conf.options
 con nano:
 sudo nano /etc/bind/named.conf.options
 
+Modificar:
+listen-on-v6 { none; };
+
 Agregar:
 forwarders {
   8.8.8.8;
