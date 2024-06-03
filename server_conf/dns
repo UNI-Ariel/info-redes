@@ -63,7 +63,7 @@ $TTL    4800
 
 Verificar configuraciones
 sudo named-checkconf
-sudo named-checkzone example.com /etc/bind/db.redes.inf
+sudo named-checkzone redes.inf /etc/bind/db.redes.inf
 sudo named-checkzone 2.0.10.in-addr.arpa /etc/bind/bd.10.0.2
 
 
