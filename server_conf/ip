@@ -1,4 +1,4 @@
-En el archivo /etc/netplan/50-cloud-init.yaml (o uno similar en esa ubicación) colocal la configuración para la IP estática
+En el archivo /etc/netplan/50-cloud-init.yaml (o uno similar en esa ubicación) colocar la configuración para la IP estática
 Con nano: sudo nano /etc/netplan/50-cloud-init.yaml
 
 network:
