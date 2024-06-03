@@ -1,0 +1,39 @@
+Instalar:
+sudo apt install nginx
+
+Ejecutar al inicio(si no esta ya por defecto):
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+Crear un bloque servidor
+sudo nano /etc/nginx/sites-available/redes.inf
+
+Agregar:
+server {
+    listen 80;
+    server_name redes.inf www.redes.inf;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+Crear directorios y dar permisos
+sudo mkdir -p /var/www/html
+sudo chown -R $USER:$USER /var/www/html
+sudo chmod -R 755 /var/www/html
+
+Añadir o crear contenido en /var/www/html/index.html
+sudo nano /var/www/html/index.html
+
+Habilitar el Sitio
+sudo ln -s /etc/nginx/sites-available/redes.inf /etc/nginx/sites-enabled/
+
+Probar no haya errores
+sudo nginx -t
+
+Reiniciar
+sudo systemctl restart nginx
