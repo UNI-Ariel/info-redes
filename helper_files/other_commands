@@ -1,0 +1,24 @@
+Tamaño de la letra de la consola
+Abrir archivo /etc/default/console-setup
+con nano:
+sudo nano /etc/default/console-setup
+
+Modificar:
+FONTSIZE="16x32"
+
+Aplicar cambios:
+setupcon
+
+Configurar fuente:
+sudo dpkg-reconfigure keyboard-configuration
+
+
+Ver la IP:
+ip a
+
+Ver la ruta:
+ip route
+
+ver en dns:
+resolvectl
+cat /etc/resolv.conf
