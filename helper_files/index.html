@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes de Computadoras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            color: #555;
+        }
+        p {
+            line-height: 1.6;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Instalación Servidor DNS-DHCP Linux <br> y prueba con clientes</h1>        
+        
+        <h2>¿Qué es DHCP?</h2>
+        <p>DHCP (Dynamic Host Configuration Protocol) es un protocolo de red 
+            utilizado para asignar direcciones IP automáticamente a los 
+            dispositivos en una red. Permite que los dispositivos se conecten 
+            a la red sin necesidad de una configuración manual de la dirección IP. 
+            Un servidor DHCP asigna una dirección IP a cada dispositivo cuando se 
+            conecta a la red, junto con otra información de configuración, 
+            como la puerta de enlace predeterminada y los servidores DNS.</p>
+        
+        <h2>¿Qué es DNS?</h2>
+        <p>DNS (Domain Name System) es un sistema que traduce nombres de dominio legibles por humanos, como <em>www.ejemplo.com</em>, en direcciones IP numéricas, como <em>192.0.2.1</em>. Esto permite a los usuarios acceder a sitios web y otros recursos en Internet utilizando nombres fáciles de recordar en lugar de tener que recordar direcciones IP. Los servidores DNS gestionan esta traducción y permiten que la navegación en la web sea más sencilla y eficiente.</p>
+        
+        <h2>Instalación en Linux: Resumen</h2>
+        
+        <h3>DHCP</h3>
+        <p>Instalar <br> sudo apt-get install isc-dhcp-server</p>
+        <p>Configurar archivos: <br> /etc/dhcp/dhcpd.conf <br> /etc/default/isc-dhcp-server </p>
+        
+        <h3>DNS</h3>
+        <p>Instalar <br> sudo apt install bind9 bind9utils bind9-doc</p> 
+        <p>Configurar archivos: <br> /etc/bind/named.conf.options <br> /etc/bind/named.conf.local 
+            <br> /etc/bind/db.redes.inf <br> /etc/bind/db.10.0.2
+        </p>
+    </div>
+</body>
+</html>
