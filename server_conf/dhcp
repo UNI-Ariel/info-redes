@@ -34,7 +34,7 @@ Modificar la linea INTERFACESv4="" a:
 INTERFACESv4="enp0s3"
 
 Reiniciar Servidor DHCP
-sudo systemctl restart lsc-dhcp-server
+sudo systemctl restart isc-dhcp-server
 
 Ver si hay errores
 sudo tail -f /var/log/syslog
