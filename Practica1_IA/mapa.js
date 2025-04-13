@@ -55,7 +55,7 @@ class Mapa {
     this.#solucion = this.nuevoNodo();
 
     if (this.#metodo === "reparacion")
-      this.#solucion.matriz = generarDatosMatriz();
+      this.#solucion.matriz = this.generarDatosMatriz();
 
     this.#colorIndex = this.#colores.reduce(
       (acc, curr, idx) => ({ ...acc, [curr]: idx }),
@@ -91,17 +91,25 @@ class Mapa {
     const matriz = this.construirMatriz();
     const numeroDatos = (this.#filas * this.#columnas) / 2;
 
-    let i = 0;
-    while (i !== numeroDatos) {
-      const x = Math.floor(Math.random() * this.#filas);
-      const y = Math.floor(Math.random() * this.#columnas);
-      const color = Math.floor(Math.random() * this.#colores.length);
+    let posiciones = [];
 
-      if (matriz[x][y] === "") {
-        matriz[x][y] = color;
-        i++;
+    for (let i = 0; i < this.#filas; i++){
+      for(let j = 0; j < this.#columnas; j++){
+        posiciones.push([i,j]);
       }
     }
+    
+    for(let n = 0; n < numeroDatos; n++){
+      const p = Math.floor(Math.random() * posiciones.length);
+      const c = Math.floor(Math.random() * this.#colores.length);
+      
+      const [x, y] = posiciones.at(p);
+      
+      matriz[x][y] = this.#colores[c];
+
+      posiciones = posiciones.filter( (v,i) => i !== p );
+    }
+
     return matriz;
   }
 
@@ -218,6 +226,7 @@ class Mapa {
   reparar() {
     if (this.#terminado) return;
     if (this.#metodo !== "reparacion") return;
+    
     
   }
 
