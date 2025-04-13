@@ -1,0 +1,84 @@
+body {
+  display: flex;
+  margin: 0;
+  height: 100vh;
+}
+
+#tree-container {
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid #ccc;
+}
+
+#simulation {
+  padding: 0.5rem;
+  width: 300px;
+  box-sizing: border-box;
+  background-color: whitesmoke;
+}
+
+#controls {
+  padding-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+#settings {
+  border-top: 1px solid dimgrey;  
+}
+
+.matrix-node {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.matrix-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.matrix-table td {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-family: monospace;
+}
+
+.node-title {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.heuristic-value {
+  font-style: italic;
+  text-align: center;
+  margin-top: 5px;
+  color: #666;
+}
+
+button {
+  padding: 0.4rem;
+  background-color: rgb(89, 88, 94);
+  box-shadow: 1px 1px 1px lightslategray;
+  color: whitesmoke;
+}
+
+button:disabled {
+  background-color: rgb(184, 184, 184);
+  color: gray;
+}
+
+button:hover:enabled {
+  background-color: rgb(125, 125, 125);;
+}
+
+.Treant > .node { padding: 2px; border: 1px solid #20213c; border-radius: 3px; }
+.Treant .collapse-switch { width: 100%; height: 100%; border: none; }
+.Treant .node.collapsed { background-color: #989aa0; }
+.Treant .node.collapsed .collapse-switch { background: none; }

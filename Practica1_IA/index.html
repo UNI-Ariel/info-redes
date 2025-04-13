@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Graficación Arboles de Busqueda</title>
+    <script src="./treant-js/vendor/raphael.js"></script>
+    <script src="./treant-js/vendor/jquery.min.js"></script>
+    <script src="./treant-js/Treant.js"></script>
+    <script src="./mapa.js"></script>
+    <link rel="stylesheet" href="./treant-js/Treant.css" />
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div id="tree-container"></div>
+    <div id="simulation">
+      <h3>Controles</h3>
+      <div id="controls">
+        <button id="next">Siguiente</button>
+        <button id="auto">Simular</button>
+        <button id="stop">Detener</button>
+        <button id="finish">Terminar</button>
+      </div>
+
+      <div id="settings">
+        <h3>Configuración</h3>
+
+        <label for="rows">Filas:</label>
+        <input type="number" id="rows" min="4" max="6" value="4" />
+        <label for="cols">Columnas:</label>
+        <input type="number" id="cols" min="4" max="6" value="4" />
+        <br /><br />
+
+        <div style="display: flex">
+          <label for="colors">Colores:</label>
+          <input type="text" id="colors" placeholder="R,G,B" value="R,G,B" />
+        </div>
+        <br />
+
+        <label>Método:</label>
+        <br />
+        <label>
+          <input type="radio" name="metodo" value="avaro" checked />
+          Avaro
+        </label>
+        <br />
+        <label>
+          <input type="radio" name="metodo" value="reparacion" />
+          Reparación
+        </label>
+        <br /><br />
+
+        <label>Camino:</label>
+        <br />
+        <label>
+          <input type="radio" name="camino" value="abajo" checked />
+          Arriva&rarr;Abajo&rarr;Izq&rarr;Der
+        </label>
+        <br />
+        <label>
+          <input type="radio" name="camino" value="izquierda" />
+          Izq&rarr;Der&rarr;Arriba&rarr;Abajo
+        </label>
+        <br /><br />
+
+        <button id="newMap">Nuevo mapa</button>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
