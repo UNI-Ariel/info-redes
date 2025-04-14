@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>Graficación Arboles de Busqueda</title>
     <script src="./treant-js/vendor/raphael.js"></script>
     <script src="./treant-js/vendor/jquery.min.js"></script>
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="./index.css" />
   </head>
   <body>
+    <noscript>Habilita JavaScript para simular</noscript>
     <div id="tree-container"></div>
     <div id="simulation">
       <h3>Controles</h3>
@@ -18,6 +20,16 @@
         <button id="auto">Simular</button>
         <button id="stop">Detener</button>
         <button id="finish">Terminar</button>
+        <label for="velocidad">Velocidad de simulación:</label>
+        <input
+          type="range"
+          id="speed"
+          name="speed"
+          min="0"
+          max="3"
+          step="1"
+          value="2"
+        />
       </div>
 
       <div id="settings">
@@ -52,7 +64,7 @@
         <br />
         <label>
           <input type="radio" name="camino" value="abajo" checked />
-          Arriva&rarr;Abajo&rarr;Izq&rarr;Der
+          Arriba&rarr;Abajo&rarr;Izq&rarr;Der
         </label>
         <br />
         <label>
@@ -65,7 +77,6 @@
       </div>
     </div>
 
-    <script src="data.js"></script>
     <script src="main.js"></script>
   </body>
 </html>

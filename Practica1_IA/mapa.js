@@ -48,7 +48,7 @@ class Mapa {
     const unicos = new Set(colores);
     if (unicos.size !== this.#colores.length) this.#colores = [...unicos];
 
-    if (!this.#metodos.includes(metodo)) this.#metodo = "constructivo";
+    if (!this.#metodos.includes(metodo)) this.#metodo = "avaro";
 
     if (!this.#caminos.includes(camino)) this.#camino = "abajo";
 
@@ -71,6 +71,9 @@ class Mapa {
       heuristica: [],
       estado: "verificar",
       hijos: [],
+      pintados: [],
+      bloqueados: [],
+      color: 0,
     };
   }
 
@@ -93,21 +96,21 @@ class Mapa {
 
     let posiciones = [];
 
-    for (let i = 0; i < this.#filas; i++){
-      for(let j = 0; j < this.#columnas; j++){
-        posiciones.push([i,j]);
+    for (let i = 0; i < this.#filas; i++) {
+      for (let j = 0; j < this.#columnas; j++) {
+        posiciones.push([i, j]);
       }
     }
-    
-    for(let n = 0; n < numeroDatos; n++){
+
+    for (let n = 0; n < numeroDatos; n++) {
       const p = Math.floor(Math.random() * posiciones.length);
       const c = Math.floor(Math.random() * this.#colores.length);
-      
+
       const [x, y] = posiciones.at(p);
-      
+
       matriz[x][y] = this.#colores[c];
 
-      posiciones = posiciones.filter( (v,i) => i !== p );
+      posiciones = posiciones.filter((v, i) => i !== p);
     }
 
     return matriz;
@@ -147,7 +150,7 @@ class Mapa {
 
     //Leer el ultimo estado generado
     let estadoActual = this.#solucion;
-    console.log(estadoActual);
+    //console.log(estadoActual);
 
     while (estadoActual.hijos.length) {
       estadoActual = estadoActual.hijos[0];
@@ -223,11 +226,163 @@ class Mapa {
     return x >= 0 && x < this.#filas && y >= 0 && y < this.#columnas;
   }
 
+  verificarFila(matriz, pos, color) {
+    const cuenta = [];
+    const { x, y } = pos;
+
+    for (let i = x; i < this.#filas; i++) {
+      const p = {};
+      p.x = i;
+      p.y = y;
+      cuenta.push(this.contarColoresIguales(p, matriz, color));
+    }
+
+    return cuenta;
+  }
+
+  contarColoresIguales(pos, matriz, color) {
+    const { x, y } = pos;
+    let cuenta = 0;
+
+    //Arriba
+    if (this.enRango(x - 1, y) && matriz[x - 1][y] === color) {
+      cuenta++;
+    }
+    //Abajo
+    if (this.enRango(x + 1, y) && matriz[x + 1][y] === color) {
+      cuenta++;
+    }
+    //Izquierda
+    if (this.enRango(x, y - 1) && matriz[x][y - 1] === color) {
+      cuenta++;
+    }
+    //Derecha
+    if (this.enRango(x, y + 1) && matriz[x][y + 1] === color) {
+      cuenta++;
+    }
+
+    return cuenta;
+  }
+
   reparar() {
     if (this.#terminado) return;
     if (this.#metodo !== "reparacion") return;
-    
-    
+
+    //Recuperar ultimo estado
+    let estadoActual = this.#solucion;
+
+    while (estadoActual.hijos.length) {
+      estadoActual = estadoActual.hijos[0];
+    }
+    const {
+      nivel,
+      matriz,
+      pos,
+      estado,
+      heuristica,
+      bloqueados,
+      pintados,
+      color,
+    } = estadoActual;
+
+    if (estado === "verificar") {
+      //Verificar fila para un color y contar los repetidos
+      const heurFilaColor = this.verificarFila(
+        matriz,
+        pos,
+        this.#colores[color]
+      );
+
+      //Acualizar heuristica (cuenta de colores alrededor de esta posicion)
+      estadoActual.heuristica = heurFilaColor;
+      estadoActual.estado = "pintar";
+    }
+
+    if (estado === "pintar") {
+      //Seleccionar el color menos repetido
+      let menosRepetido = 0;
+      let pintarPos = [menosRepetido];
+      for (let i = 1; i < heuristica.length; i++) {
+        if (heuristica[i] < heuristica[menosRepetido]) {
+          menosRepetido = i;
+          pintarPos = [i];
+        } else if (heuristica[i] === heuristica[menosRepetido]) {
+          pintarPos.push(i);
+        }
+      }
+
+      console.log("para pintar:", pintarPos);
+
+      //Pintar el color
+      for (let i = 0; i < pintarPos.length; i++) {
+        console.log("=============================================");
+        
+        console.log("posicion pintar:", pintarPos[i]);
+        console.log("posiciones pintadas:", pintados.join(","));
+        console.log("posiciones bloqueadas:", bloqueados.join(","));
+
+        if (
+          !pintados.includes(pintarPos[i]) &&
+          !bloqueados.includes(pintarPos[i])
+        ) {
+          if (pos.y - 1 < 0) {
+            this.pintarYBloquearColor(
+              pintarPos[i],
+              pos.y,
+              matriz,
+              this.#colores[color],
+              pintados,
+              bloqueados
+            );
+          } else if (
+            pos.y - 1 >= 0 &&
+            matriz[pintarPos[i]][pos.y - 1] !== this.#colores[color]
+          ) {
+            this.pintarYBloquearColor(
+              pintarPos[i],
+              pos.y,
+              matriz,
+              this.#colores[color],
+              pintados,
+              bloqueados
+            );
+          }
+        }
+      }
+
+      estadoActual.estado = "pintado";
+    }
+
+    if (estado === "pintado") {
+      //Buscar el color o la siguiente columna a colorear
+      if (color + 1 === this.#colores.length && pos.y + 1 === this.#columnas) {
+        this.#terminado = true;
+      } else {
+        const nuevoEstado = this.nuevoNodo();
+        nuevoEstado.nivel = nivel + 1;
+        nuevoEstado.matriz = JSON.parse(JSON.stringify(matriz));
+        if (color + 1 === this.#colores.length) {
+          nuevoEstado.pos.y = pos.y + 1;
+        } else {
+          nuevoEstado.pintados = JSON.parse(JSON.stringify(pintados));
+          nuevoEstado.color = color + 1;
+          nuevoEstado.pos.y = pos.y;
+        }
+
+        //Agregar el siguiente estado a analizar a la solucion
+        estadoActual.hijos.push(nuevoEstado);
+      }
+    }
+  }
+
+  pintarYBloquearColor(x, y, matriz, color, pintados, bloqueados) {
+    console.log("pintando:", x, y, color);
+
+    matriz[x][y] = color;
+    pintados.push(x);
+    if (x + 1 < this.#filas) {
+      bloqueados.push(x + 1);
+    }
   }
 
   siguienteEstado() {
@@ -252,5 +407,13 @@ class Mapa {
 
   get solucion() {
     return this.#solucion;
+  }
+
+  get metodo() {
+    return this.#metodo;
+  }
+
+  get colores() {
+    return this.#colores;
   }
 }

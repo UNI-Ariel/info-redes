@@ -1,14 +1,20 @@
 //////////////////////////////// Treant ///////////////////////////////////////
 //Datos de matriz a datos de tabla
-matrixToTable = (matriz) => {
+matrixToTable = (matriz, pos = null) => {
   const tabla = document.createElement("table");
   tabla.classList.add("matrix-table");
 
-  matriz.forEach((fila) => {
+  matriz.forEach((fila, ix) => {
     const tr = document.createElement("tr");
-    fila.forEach((columna) => {
+    fila.forEach((columna, ij) => {
       const td = document.createElement("td");
       td.textContent = columna;
+      if (pos && pos.x === -1 && pos.y === ij) {
+        td.classList.add("marked");
+      } else if (pos && pos.x === ix && pos.y === ij) {
+        td.classList.add("marked");
+      }
+
       tr.appendChild(td);
     });
     tabla.appendChild(tr);
@@ -16,14 +22,45 @@ matrixToTable = (matriz) => {
   return tabla;
 };
 
-// Convertir del mapa a datos para Treant (Recursivo)
-mapToTreantNodes = (map) => {
-  const { nivel, matriz, heuristica, estado, hijos } = map;
+listToTable = (list) => {
+  const tabla = document.createElement("table");
 
+  list.forEach((i) => {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.textContent = i;
+    tr.appendChild(td);
+    tabla.appendChild(tr);
+  });
+  return tabla;
+};
+
+// Convertir del mapa a datos para Treant (Recursivo)
+mapToTreantNodes = (mapData) => {
+  const { nivel, matriz, heuristica, estado, hijos } = mapData;
+
+  //Nodo de la matriz
   const div = document.createElement("div");
   div.classList.add("matrix-node");
 
-  div.appendChild(matrixToTable(matriz));
+  //Titulo del Nodo
+  const h5 = document.createElement("h5");
+  h5.innerText = `Heuristica: ${
+    map?.metodo === "avaro" ? "Colores Alrededor" : map.colores[mapData.color]
+  }`;
+
+  const titulo = document.createElement("div");
+  titulo.appendChild(h5);
+  div.appendChild(titulo);
+
+  //Contenido del Nodo
+  const contenido = document.createElement("div");
+  const markPos = JSON.parse(JSON.stringify(mapData.pos));
+  if (map?.metodo === "reparacion") markPos.x = -1;
+  contenido.classList.add("node-content");
+  contenido.appendChild(matrixToTable(matriz, markPos));
+  contenido.appendChild(listToTable(heuristica));
+  div.appendChild(contenido);
 
   const datos = {
     innerHTML: div.outerHTML,
@@ -36,12 +73,6 @@ mapToTreantNodes = (map) => {
       datos.children.push(mapToTreantNodes(hijo));
     }
   }
-  // Add heuristic if available
-  /* if (node.heuristic && node.heuristic.length > 0) {
-    matrixHtml += `<div class="heuristic-value">h=${node.heuristic.join(
-      ", "
-    )}</div>`;
-  } */
 
   return datos;
 };
@@ -77,16 +108,24 @@ const auto_btn = document.getElementById("auto");
 const stop_btn = document.getElementById("stop");
 const finish_btn = document.getElementById("finish");
 const newMap_btn = document.getElementById("newMap");
+const speed_select = document.getElementById("speed");
 
 let map;
 let autoID;
 let simulationStatus = "clear";
+let simulationSpeed = 500;
 
 ////////////////////////////////// Funciones //////////////////////////////////
 const render = () => {
   console.log("rendering");
 
   new Treant(createTreantConfig(map.solucion));
+  focusLastNode();
+};
+
+const focusLastNode = () => {
+  const node = document.getElementById("tree-container").querySelector("div");
+  node.scrollIntoView();
 };
 
 const singleStep = () => {
@@ -101,10 +140,10 @@ const singleStep = () => {
   }
 };
 
-const startAuto = (timer = 1000) => {
+const startAuto = () => {
   if (simulationStatus === "standby") {
     updateSimulationStatus("auto");
-    autoID = setInterval(singleStep, timer);
+    autoID = setInterval(singleStep, simulationSpeed);
   }
 };
 
@@ -131,21 +170,31 @@ const updateSimulationStatus = (status) => {
     auto_btn.disabled = true;
     stop_btn.disabled = true;
     finish_btn.disabled = true;
+    speed_select.disabled = true;
   }
   if (status === "standby") {
     next_btn.disabled = false;
     auto_btn.disabled = false;
     stop_btn.disabled = false;
     finish_btn.disabled = false;
+    speed_select.disabled = false;
   }
   if (status === "auto") {
     next_btn.disabled = true;
     auto_btn.disabled = true;
     stop_btn.disabled = false;
     finish_btn.disabled = true;
+    speed_select.disabled = true;
   }
   simulationStatus = status;
 };
+
+const updateSimulationSpeed = () => {
+  const speedRanges = [2000, 1500, 1000, 500];
+  simulationSpeed = speedRanges[speed_select.value];
+  console.log("new Speed:", simulationSpeed);
+  
+}
 
 const createNewMap = () => {
   const filas = parseInt(document.getElementById("rows").value);
@@ -177,7 +226,8 @@ next_btn.addEventListener("click", singleStep);
 auto_btn.addEventListener("click", startAuto);
 stop_btn.addEventListener("click", stopAuto);
 finish_btn.addEventListener("click", endSimulation);
-newMap_btn.addEventListener('click', createNewMap);
+newMap_btn.addEventListener("click", createNewMap);
+speed_select.addEventListener("input", updateSimulationSpeed);
 
 ////////////////////////////////// Simulacion /////////////////////////////////
 updateSimulationStatus(simulationStatus);
